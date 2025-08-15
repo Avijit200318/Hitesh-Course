@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import userRouter from "./routes/user.routes.js";
+import { errorHandler } from "./middlewares/error.middelwares.js";
 
 const app = express();
 
@@ -15,5 +17,10 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+
+app.use("/api/users", userRouter);
+
+
+app.use(errorHandler);
 
 export { app }
