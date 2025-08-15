@@ -88,4 +88,62 @@ export const registerUser = asyncHandler(async (req, res) => {
 
         throw new ApiError(500, "Something went wrong while registering user and images were deleted");
     }
-})
+});
+
+
+export const generateAccessAndRefreshToken = async (user) => {
+    // since this is not an controller function which have (req, res, next) we can't use asyncHandler()
+    try {    
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+    
+        user.refreshToken = refreshToken;
+        user.save({validateBeforeSave: false});
+    
+        return {accessToken, refreshToken};
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating access and refresh tokens");
+    }
+};
+
+
+export const userLogin = asyncHandler(async (req, res, next) => {
+    const {email, username, password} = req.body;
+
+    // validation use zod or anyother things
+
+    if(!email){
+        throw new ApiError(400, "Email is required");
+    }
+
+    const user = await userModel.findOne({
+        $or: [{email}, {username}]
+    });
+
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    // validate password
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if(!isPasswordValid){
+        throw new ApiError(401, "Invalid user creadentials");
+    }
+
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user);
+
+    // this is an extra safety. After the access and refresh token is created we will check again the user because some data is added.
+    const loggedInUser = await userModel.findById(user._id).select("-password -refreshToken");
+
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "development,"
+    }
+
+    return res.status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new ApiResponse(200, { user:loggedInUser, accessToken, refreshToken }, "User logged in successfully"));
+    // the refreshToken if needed to the frontend then we will send it otherwise we don't need
+});
