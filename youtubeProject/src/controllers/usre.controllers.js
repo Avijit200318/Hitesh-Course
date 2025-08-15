@@ -4,12 +4,13 @@ import userModel from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/Apiresponse.js"
 
-export const registerUser = asyncHandler(async (res, req) => {
+export const registerUser = asyncHandler(async (req, res) => {
     const {fullName, email, password, username} = req.body;
+    console.log("req.body: ", req.body)
 
     // validation -> we can use any of them zod or any othering
     if(
-        [fullName, email, password, username].some((field) => field?.trim() === "")
+        [fullName, email, username, password].some((field) => field?.trim() === "")
     ){
         throw new ApiError(400, "All fileds are required");
     }
@@ -22,20 +23,40 @@ export const registerUser = asyncHandler(async (res, req) => {
         throw new ApiError(409, "User with email or usernam exists");
     }
 
+    console.log(req.files);
     // fetching multer localPaths
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
     if(!avatarLocalPath){
         throw new ApiError(400, "Avatar file is missing");
     }
 
     // now lets upload in cloudinary
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
-    // for coverImage we need to check if user provide it or may not. its not necessary into database
-    let coverImaage = "";
-    if(coverImageLocalPath){
+    // const avatar = await uploadOnCloudinary(avatarLocalPath);
+    // // for coverImage we need to check if user provide it or may not. its not necessary into database
+    // let coverImaage = "";
+    // if(coverImageLocalPath){
+    //     coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    // }
+
+    let avatar;
+    // we generally don't need it but for this case to check if we have files or not we need to check this
+    try{
+        avatar = await uploadOnCloudinary(avatarLocalPath);
+        console.log("Uploaded avatar", avatar);
+    }catch(error){
+        console.log("Error uploading avatar: ", error);
+        throw new ApiError(500, "Failed to upload avatar");
+    }
+
+    let coverImage;
+    try{
         coverImage = await uploadOnCloudinary(coverImageLocalPath);
+        console.log("Uploaded coverImage", coverImage);
+    }catch(error){
+        console.log("Error uploading coverImage: ", error);
+        throw new ApiError(500, "Failed to upload coverImage");
     }
 
     const user = await userModel.create({
