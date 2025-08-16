@@ -252,7 +252,7 @@ Example:
     "success": true
 }
 ```
-## Endpoint: `http://localhost:3000/api/users/getUser`
+## Endpoint: `http://localhost:3000/api/users/current-user`
 
 ### Description
 This endpoint retrieves the currently authenticated user's details.  
@@ -315,7 +315,7 @@ This endpoint allows the authenticated user to update their **account details**,
 It returns the updated user profile (excluding sensitive fields like `password` and `refreshToken`).
 
 ### Method
-`POST`
+`PATCH`
 
 ### Headers
 - `Authorization`: Bearer token (required)
@@ -391,7 +391,7 @@ This endpoint allows the authenticated user to **update their profile avatar**.
 The uploaded image is stored on **Cloudinary**, and the user document is updated with the new avatar URL.  
 
 ### Method
-`POST`
+`PATCH`
 
 ### Headers
 - `Authorization`: Bearer token (required)  
@@ -465,7 +465,7 @@ This endpoint allows the authenticated user to **update their profile cover imag
 The uploaded image is stored on **Cloudinary**, and the user document is updated with the new cover image URL.  
 
 ### Method
-`POST`
+`PATCH`
 
 ### Headers
 - `Authorization`: Bearer token (required)  
@@ -530,5 +530,140 @@ Example:
     },
     "message": "CoverImage updated successfully",
     "success": true
+}
+```
+## Endpoint: `http://localhost:3000/api/c/:username`
+
+### Description
+This endpoint retrieves a **channel profile** based on the provided `username`.  
+It includes subscriber counts, channels the user is subscribed to, and whether the logged-in user is subscribed to this channel.
+
+### Method
+`GET`
+
+### Headers
+- `Authorization`: Bearer token (required)
+
+### Authentication
+✅ Requires the user to be logged in.
+
+### Path Parameters
+- `username` **(string, required)**: The username of the channel owner.
+
+### Example Request
+```http
+GET http://localhost:3000/api/channel/demoUser
+Authorization: Bearer <accessToken>
+```
+### Example Response
+The response will be a JSON object with the following fields:
+
+- `statusCode` **(number)**: HTTP status code indicating the outcome of the request.  
+- `data` **(object)**: Channel profile details.  
+  - `fullName` **(string)**: Full name of the channel owner.  
+  - `username` **(string)**: The channel's unique username.  
+  - `avatar` **(string)**: Profile picture URL.  
+  - `coverImage` **(string)**: Channel cover image URL.  
+  - `subscribersCount` **(number)**: Total number of subscribers to the channel.  
+  - `channelsSubscribedToCount` **(number)**: Number of channels this user has subscribed to.  
+  - `isSubscribed` **(boolean)**: Whether the logged-in user is subscribed to this channel.  
+  - `email` **(string)**: Email address of the channel owner.  
+- `message` **(string)**: Human-readable confirmation message.  
+- `success` **(boolean)**: Indicates whether the request was successful.  
+
+#### Example
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "fullName": "Demo User",
+    "username": "demoUser",
+    "avatar": "http://res.cloudinary.com/.../avatar.png",
+    "coverImage": "http://res.cloudinary.com/.../cover.png",
+    "subscribersCount": 120,
+    "channelsSubscribedToCount": 15,
+    "isSubscribed": true,
+    "email": "demo@gmail.com"
+  },
+  "message": "Channel profile fetch successfully",
+  "success": true
+}
+```
+## Endpoint: `http://localhost:3000/api/users/history`
+
+### Description
+This endpoint retrieves the **watch history** of the authenticated user.  
+It fetches all videos the user has watched, along with limited details about the video owner (full name, username, and avatar).  
+The data is retrieved using MongoDB aggregation with `$lookup` to populate video and owner details.
+
+### Method
+`GET`
+
+### Headers
+- `Authorization`: Bearer token (required)
+
+### Authentication
+✅ Requires the user to be logged in.
+
+### Request Body
+No request body is required.
+
+---
+
+### Example Response
+The response will be a JSON object with the following fields:
+
+- `statusCode` **(number)**: HTTP status code indicating the outcome of the request.  
+- `data` **(array)**: List of video objects in the user's watch history.  
+  - Each video contains:  
+    - `_id` **(string)**: Video ID.  
+    - `title` **(string)**: Title of the video.  
+    - `description` **(string)**: Description of the video.  
+    - `thumbnail` **(string)**: Thumbnail image URL.  
+    - `duration` **(number)**: Video duration in seconds.  
+    - `createdAt` **(string – ISO date)**: When the video was uploaded.  
+    - `owner` **(object)**: Limited details of the user who uploaded the video.  
+      - `fullName` **(string)**: Owner's full name.  
+      - `username` **(string)**: Owner's username.  
+      - `avatar` **(string)**: Owner's profile image.  
+- `message` **(string)**: Human-readable confirmation message. Example: `"Watched history fetch successfully"`.  
+- `success` **(boolean)**: Indicates whether the request was successful (`true`) or not (`false`).  
+
+---
+
+#### Example
+```json
+{
+  "statusCode": 200,
+  "data": [
+    {
+      "_id": "64ff21a23beac85f9d1b1234",
+      "title": "Learning Node.js Basics",
+      "description": "An introduction to Node.js for beginners",
+      "thumbnail": "http://res.cloudinary.com/.../nodejs-thumb.png",
+      "duration": 600,
+      "createdAt": "2025-08-15T12:40:50.607Z",
+      "owner": {
+        "fullName": "John Doe",
+        "username": "john_doe",
+        "avatar": "http://res.cloudinary.com/.../john-avatar.png"
+      }
+    },
+    {
+      "_id": "64ff21a23beac85f9d1b5678",
+      "title": "MongoDB Aggregation Explained",
+      "description": "Deep dive into MongoDB aggregation pipelines",
+      "thumbnail": "http://res.cloudinary.com/.../mongo-thumb.png",
+      "duration": 1200,
+      "createdAt": "2025-08-16T14:12:30.207Z",
+      "owner": {
+        "fullName": "Jane Smith",
+        "username": "jane_smith",
+        "avatar": "http://res.cloudinary.com/.../jane-avatar.png"
+      }
+    }
+  ],
+  "message": "Watched history fetch successfully",
+  "success": true
 }
 ```
