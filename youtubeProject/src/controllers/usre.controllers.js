@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import userModel from "../models/user.models.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/Apiresponse.js"
+import jwt from "jsonwebtoken";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const {fullName, email, password, username} = req.body;
@@ -146,4 +147,45 @@ export const userLogin = asyncHandler(async (req, res, next) => {
     .cookie("refreshToken", refreshToken, options)
     .json(new ApiResponse(200, { user:loggedInUser, accessToken, refreshToken }, "User logged in successfully"));
     // the refreshToken if needed to the frontend then we will send it otherwise we don't need
+});
+
+export const refreshAccessToken = asyncHandler( async (req, res) => {
+    const incommingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+    if(!incommingRefreshToken){
+        throw new ApiError(401, "Refresh token is required");
+    }
+
+    // when we are accessing or decoding any token then its adviasable to use try catch method
+    try{
+        const decodedToken = jwt.verify(incommingRefreshToken, process.env.REFRESH_TOKEN_SECRET );
+
+        const user = await userModel.findById(decodedToken?._id);
+
+        if(!user){
+            throw new ApiError(401, "Invalid refresh token");
+        }
+
+        if(incommingRefreshToken !== user.refreshToken){
+            throw new ApiError(401, "Invalid refresh token");
+        }
+
+        const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "development,"
+        }
+
+        const {accessToken, refreshToken: newRefreshToken} = await generateAccessAndRefreshToken(user);
+
+        res.status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", newRefreshToken, options)
+        .json(new ApiResponse(200, { accessToken, refreshToken: newRefreshToken }, "Access token refresh successfully"));
+    }catch(error){
+
+    }
+})
+
+export const logoutUser = asyncHandler(async (req, res) => {
+    
 });
