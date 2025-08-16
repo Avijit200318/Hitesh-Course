@@ -139,7 +139,7 @@ export const userLogin = asyncHandler(async (req, res, next) => {
 
     const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development,"
+        secure: process.env.NODE_ENV === "development"
     }
 
     return res.status(200)
@@ -151,6 +151,7 @@ export const userLogin = asyncHandler(async (req, res, next) => {
 
 export const refreshAccessToken = asyncHandler( async (req, res) => {
     const incommingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+    // the token may came from headers
 
     if(!incommingRefreshToken){
         throw new ApiError(401, "Refresh token is required");
@@ -172,7 +173,7 @@ export const refreshAccessToken = asyncHandler( async (req, res) => {
 
         const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development,"
+        secure: process.env.NODE_ENV === "development"
         }
 
         const {accessToken, refreshToken: newRefreshToken} = await generateAccessAndRefreshToken(user);
@@ -187,5 +188,20 @@ export const refreshAccessToken = asyncHandler( async (req, res) => {
 })
 
 export const logoutUser = asyncHandler(async (req, res) => {
-    
+    await userModel.findOneAndUpdate(req.user._id, {
+        $set: {
+            refreshToken: undefined,
+        }
+    }, {new: true}
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "development"
+    }
+
+    res.status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out successfully"))
 });
