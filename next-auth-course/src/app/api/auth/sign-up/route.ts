@@ -2,6 +2,7 @@ import { connectToDb } from "@/lib/dbConnect";
 import userModel from "@/models/User";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { sendEmail } from "@/helpers/mailer";
 
 
 export async function POST(req: NextRequest) {
@@ -63,6 +64,10 @@ export async function POST(req: NextRequest) {
             });
 
         }
+        // created just to tell which type . we need to handle this differently
+        const emailType = "VERIFY"
+        // send email
+        await sendEmail(email, username, emailType);
 
         return NextResponse.json({
             success: true,
@@ -73,7 +78,8 @@ export async function POST(req: NextRequest) {
         console.error("Error registering user: ", error);
         return NextResponse.json({
             success: false,
-            message: "Error registering user"
+            message: "Error registering user",
+            error: error.message
         },
         {status: 500}
         );
