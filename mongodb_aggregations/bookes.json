@@ -1,0 +1,50 @@
+[
+  {
+    "_id": 1,
+    "title": "The Great Gatsby",
+    "author_id": 100,
+    "genre": "Classic",
+    "publishedYear": 1925,
+    "rating": 4.5
+  },
+  {
+    "_id": 2,
+    "title": "1984",
+    "author_id": 101,
+    "genre": "Dystopian",
+    "publishedYear": 1949,
+    "rating": 4.8
+  },
+  {
+    "_id": 3,
+    "title": "Animal Farm",
+    "author_id": 101,
+    "genre": "Political Satire",
+    "publishedYear": 1945,
+    "rating": 4.6
+  },
+  {
+    "_id": 4,
+    "title": "Pride and Prejudice",
+    "author_id": 102,
+    "genre": "Romance",
+    "publishedYear": 1813,
+    "rating": 4.7
+  },
+  {
+    "_id": 5,
+    "title": "Norwegian Wood",
+    "author_id": 103,
+    "genre": "Fiction",
+    "publishedYear": 1987,
+    "rating": 4.3
+  },
+  {
+    "_id": 6,
+    "title": "Things Fall Apart",
+    "author_id": 104,
+    "genre": "Historical Fiction",
+    "publishedYear": 1958,
+    "rating": 4.4
+  }
+]

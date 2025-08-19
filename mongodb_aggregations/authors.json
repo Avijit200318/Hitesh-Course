@@ -1,0 +1,32 @@
+[
+  {
+    "_id": 100,
+    "name": "F. Scott Fitzgerald",
+    "country": "USA",
+    "birthYear": 1896
+  },
+  {
+    "_id": 101,
+    "name": "George Orwell",
+    "country": "UK",
+    "birthYear": 1903
+  },
+  {
+    "_id": 102,
+    "name": "Jane Austen",
+    "country": "UK",
+    "birthYear": 1775
+  },
+  {
+    "_id": 103,
+    "name": "Haruki Murakami",
+    "country": "Japan",
+    "birthYear": 1949
+  },
+  {
+    "_id": 104,
+    "name": "Chinua Achebe",
+    "country": "Nigeria",
+    "birthYear": 1930
+  }
+]

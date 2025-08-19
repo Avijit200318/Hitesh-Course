@@ -1,0 +1,112 @@
+[
+  {
+    "_id": 201,
+    "index": 1,
+    "name": "Alice Johnson",
+    "isActive": true,
+    "registered": "2019-03-14T09:21:35Z",
+    "age": 29,
+    "gender": "female",
+    "eyeColor": "blue",
+    "favoriteFruit": "apple",
+    "company": {
+      "title": "TECHWAVE",
+      "email": "alice.johnson@techwave.com",
+      "phone": "+1 212 555 0182",
+      "location": {
+        "country": "USA",
+        "address": "120 5th Avenue, New York"
+      }
+    },
+    "tags": ["reading", "travel", "classic-literature", "yoga"],
+    "borrowedBooks": [1, 2]
+  },
+  {
+    "_id": 202,
+    "index": 2,
+    "name": "Bob Smith",
+    "isActive": false,
+    "registered": "2018-07-02T14:55:12Z",
+    "age": 35,
+    "gender": "male",
+    "eyeColor": "green",
+    "favoriteFruit": "banana",
+    "company": {
+      "title": "INNOVIX",
+      "email": "bob.smith@innovix.org",
+      "phone": "+1 415 555 0199",
+      "location": {
+        "country": "USA",
+        "address": "88 Market Street, San Francisco"
+      }
+    },
+    "tags": ["fiction", "satire", "gaming", "coffee"],
+    "borrowedBooks": [3, 5]
+  },
+  {
+    "_id": 203,
+    "index": 3,
+    "name": "Clara Lee",
+    "isActive": true,
+    "registered": "2020-01-10T12:11:42Z",
+    "age": 27,
+    "gender": "female",
+    "eyeColor": "hazel",
+    "favoriteFruit": "strawberry",
+    "company": {
+      "title": "GLOBALDATA",
+      "email": "clara.lee@globaldata.net",
+      "phone": "+44 20 7946 0542",
+      "location": {
+        "country": "UK",
+        "address": "221B Baker Street, London"
+      }
+    },
+    "tags": ["romance", "history", "art", "music"],
+    "borrowedBooks": [4]
+  },
+  {
+    "_id": 204,
+    "index": 4,
+    "name": "David Kim",
+    "isActive": true,
+    "registered": "2016-09-23T07:05:28Z",
+    "age": 32,
+    "gender": "male",
+    "eyeColor": "black",
+    "favoriteFruit": "pear",
+    "company": {
+      "title": "ZENITH",
+      "email": "david.kim@zenith.com",
+      "phone": "+82 2 555 0147",
+      "location": {
+        "country": "South Korea",
+        "address": "77 Gangnam Avenue, Seoul"
+      }
+    },
+    "tags": ["philosophy", "history", "football", "tea"],
+    "borrowedBooks": [6, 2]
+  },
+  {
+    "_id": 205,
+    "index": 5,
+    "name": "Daniel Chen",
+    "isActive": true,
+    "registered": "2017-11-22T08:33:49Z",
+    "age": 41,
+    "gender": "male",
+    "eyeColor": "brown",
+    "favoriteFruit": "mango",
+    "company": {
+      "title": "NEXTGEN",
+      "email": "daniel.chen@nextgen.org",
+      "phone": "+44 20 7946 0973",
+      "location": {
+        "country": "UK",
+        "address": "14 Oxford Lane"
+      }
+    },
+    "tags": ["strategy", "analytics", "research", "sports", "coffee"],
+    "borrowedBooks": [5, 1, 3]
+  }
+]
