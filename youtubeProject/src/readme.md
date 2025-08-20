@@ -667,3 +667,54 @@ The response will be a JSON object with the following fields:
   "success": true
 }
 ```
+
+## Endpoint: `http://localhost:3000/api/users/refresh-token`
+
+### Description
+This endpoint refreshes the **access token** and issues a new **refresh token**.  
+It is used when the access token expires, allowing the user to remain logged in without having to re-enter credentials.
+
+### Method
+`POST`
+
+### Headers
+- `Authorization`: Bearer token (optional)  
+- `Cookie`: `refreshToken` (optional if sent in request body)  
+
+### Authentication
+✅ Requires a valid **refresh token** either in cookies or request body.
+
+### Request Body
+Send a JSON object if the refresh token is not stored in cookies:
+
+```json
+{
+  "refreshToken": "your_refresh_token_here"
+
+  or send using headers
+
+  "Authorization": "Bearer your_refresh_token_here"
+}
+```
+### Example Response
+The response will be a JSON object with the following fields:
+
+- `statusCode` **(number)**: HTTP status code indicating the outcome of the request.  
+- `data` **(object)**: Contains the newly issued tokens.  
+  - `accessToken` **(string)**: New short-lived JWT for API authentication.  
+  - `refreshToken` **(string)**: New long-lived JWT used for future refreshes.  
+- `message` **(string)**: A message confirming the refresh. Example: `"Access token refresh successfully"`.  
+- `success` **(boolean)**: Indicates whether the request was successful (`true`) or not (`false`).  
+
+#### Example:
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  },
+  "message": "Access token refresh successfully",
+  "success": true
+}
+```
